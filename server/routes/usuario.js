@@ -7,7 +7,9 @@ const _ = require('underscore');
 
 const app = express();
 
-app.get('/usuario', function (req, res) {
+const { verificaToken,verificaAdmin_Role } = require('../middlewares/autenticacion');
+
+app.get('/usuario', verificaToken,  (req, res) => {
     
 
 
@@ -27,9 +29,7 @@ app.get('/usuario', function (req, res) {
                          ok: false,
                          err
                      });
-                 }
-
-                
+                 }  
 
                 Usuario.count({ estado:true }, (err, conteo) => {
                     res.json({
@@ -46,7 +46,7 @@ app.get('/usuario', function (req, res) {
 });
 
 
-app.post('/usuario', function (req, res) {
+app.post('/usuario', [verificaToken, verificaAdmin_Role],  (req, res) => {
 
     let body = req.body
     let usuario = new Usuario({
@@ -79,7 +79,7 @@ app.post('/usuario', function (req, res) {
 });
 
 
-app.put('/usuario/:id', function (req, res) {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Role],  (req, res) => {
 
     let id = req.params.id;
     let body = _.pick( req.body, ['nombde','email','img','role','estado'] );;
@@ -103,7 +103,7 @@ app.put('/usuario/:id', function (req, res) {
 
 });
 
-app.delete('/usuario/:id', function (req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
 
     let id = req.params.id;
     let body = _.pick( req.body, ['estado'] );
@@ -131,37 +131,6 @@ app.delete('/usuario/:id', function (req, res) {
         });
     });
   });
-
-//Borrar el Registro de la Base de Datos
-// app.delete('/usuario/:id', function (req, res) {
-
-//     let id = req.params.id;
-
-//     Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
-
-//         if( err ){
-//             return res.status(400).json({
-//                  ok: false,
-//                  err
-//              });
-//          }
-
-//         if(!usuarioBorrado){
-//             return res.status(400).json({
-//                 ok:false,
-//                 err:{
-//                     message: 'Usuario no encontrado'
-//                 }
-//             })
-//         }
-//         // 
-//         res.json({
-//             ok: true,
-//             usuario: usuarioBorrado
-//         })
-//     });
-
-// });
 
 
 module.exports = app;
