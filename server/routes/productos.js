@@ -128,6 +128,7 @@ app.post('/productos', verificaToken, (req, res) => {
         nombre: body.nombre,
         precioUni: body.precioUni,
         descripcion: body.descripcion,
+        img: body.img,
         disponible: body.disponible,
         categoria: body.categoria,
         usuario: req.usuario._id
@@ -139,15 +140,6 @@ app.post('/productos', verificaToken, (req, res) => {
             return res.status(500).json({
                 ok: false,
                 err
-            });
-        }
-
-        if (!productoDB) {
-            return res.status(400).json({
-                ok: false,
-                err: {
-                    message: 'El id no existe'
-                }
             });
         }
 
